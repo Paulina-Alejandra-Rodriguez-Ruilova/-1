@@ -40,7 +40,7 @@ public:
 };
 
 void showSelection(const dispenserType& dispenser) {
-    std::cout << "Product: " << dispenser.getNoOfItems() << " items, Cost: " << dispenser.getCost() << " cents" << std::endl;
+    std::cout << "Product: " << dispenser.getNoOfItems() << " items, Cost: " << dispenser.getCost() << " rubles" << std::endl;
 }
 
 void sellProduct(dispenserType& dispenser, cashRegister& cashRegister) {
@@ -48,8 +48,8 @@ void sellProduct(dispenserType& dispenser, cashRegister& cashRegister) {
     int cash = cashRegister.getCurrentBalance();
 
     if (dispenser.getNoOfItems() > 0) {
-        std::cout << "You have chosen this product. The cost is " << cost << " cents." << std::endl;
-        std::cout << "Please insert " << cost << " cents." << std::endl;
+        std::cout << "You have chosen this product. The cost is " << cost << " rubles." << std::endl;
+        std::cout << "Please insert " << cost << " rubles." << std::endl;
 
         int amount;
         std::cin >> amount;
@@ -76,7 +76,7 @@ int main() {
     cashRegister cashRegister1;
 
     while (true) {
-        std::cout << "Welcome to the candy vending machine!" << std::endl;
+        std::cout << "Welcome to the vending machine!" << std::endl;
         std::cout << "Please choose a product:" << std::endl;
         std::cout << "1. Candy" << std::endl;
         std::cout << "2. Chips" << std::endl;
@@ -105,7 +105,7 @@ int main() {
             sellProduct(dispenser2, cashRegister1);
             break;
         case 5:
-            std::cout << "Thank you for using the candy vending machine! Have a nice day!" << std::endl;
+            std::cout << "Thank you for using the vending machine! Have a nice day!" << std::endl;
             return 0;
         default:
             std::cout << "Invalid choice. Please try again." << std::endl;

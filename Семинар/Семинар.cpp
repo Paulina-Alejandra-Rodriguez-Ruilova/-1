@@ -1,115 +1,120 @@
 ﻿#include <iostream>
+using namespace std;
 
-class cashRegister {
+class VendingMachine {
 private:
-    int cashOnHand;
+    int cashAvailable;
 
 public:
-    cashRegister() : cashOnHand(500) {}
-    cashRegister(int initialCash) : cashOnHand(initialCash) {}
-
-    int getCurrentBalance() const {
-        return cashOnHand;
+    VendingMachine() {
+        cashAvailable = 500;
     }
 
-    void acceptAmount(int amount) {
-        cashOnHand += amount;
+    VendingMachine(int initialCash) {
+        cashAvailable = initialCash;
+    }
+
+    int getBalance() const {
+        return cashAvailable;
+    }
+
+    void acceptAmount(int amountIn) {
+        cashAvailable += amountIn;
     }
 };
 
-class dispenserType {
+class ProductDispenser {
 private:
-    int numberOfItems;
-    int typeCost;
+    int availableItems;
+    int price;
 
 public:
-    dispenserType() : numberOfItems(50), typeCost(10) {}
-    dispenserType(int noOfItems, int cost) : numberOfItems(noOfItems), typeCost(cost) {}
-
-    int getNoOfItems() const {
-        return numberOfItems;
+    ProductDispenser() {
+        availableItems = 50;
+        price = 50;
     }
 
-    int getCost() const {
-        return typeCost;
+    ProductDispenser(int items, int priceIn) {
+        availableItems = items;
+        price = priceIn;
     }
 
-    void makeSale() {
-        numberOfItems--;
+    int getAvailableItems() const {
+        return availableItems;
+    }
+
+    int getPrice() const {
+        return price;
+    }
+
+    void sellProduct() {
+        availableItems--;
     }
 };
 
-void showSelection(const dispenserType& dispenser) {
-    std::cout << "Product: " << dispenser.getNoOfItems() << " items, Cost: " << dispenser.getCost() << " rubles" << std::endl;
+void displayMenu() {
+    cout << "Welcome to the vending machine!\n";
+    cout << "1. Gummies\n";
+    cout << "2. Chips\n";
+    cout << "3. Candies\n";
+    cout << "4. Chocolate\n";
+    cout << "Select product, enter number: ";
 }
 
-void sellProduct(dispenserType& dispenser, cashRegister& cashRegister) {
-    int cost = dispenser.getCost();
-    int cash = cashRegister.getCurrentBalance();
+void processSale(ProductDispenser& productDispenser, VendingMachine& cashRegister) {
+    int productPrice = productDispenser.getPrice();
+    int currentBalance = cashRegister.getBalance();
+    int userMoneyInput;
 
-    if (dispenser.getNoOfItems() > 0) {
-        std::cout << "You have chosen this product. The cost is " << cost << " rubles." << std::endl;
-        std::cout << "Please insert " << cost << " rubles." << std::endl;
+    if (productDispenser.getAvailableItems() > 0) {
+        cout << "Product price: " << productPrice << " rubles. Please deposit the money: ";
+        cin >> userMoneyInput;
 
-        int amount;
-        std::cin >> amount;
-
-        if (amount >= cost) {
-            cashRegister.acceptAmount(amount);
-            dispenser.makeSale();
-            std::cout << "You have successfully bought this product, thank you!" << std::endl;
+        if (userMoneyInput >= productPrice) {
+            if (currentBalance >= userMoneyInput - productPrice) {
+                productDispenser.sellProduct();
+                cashRegister.acceptAmount(productPrice);
+                cout << "Your product has been issued!\n";
+                cout << "Your change: " << userMoneyInput - productPrice << " rubles.\n";
+            }
+            else {
+                cout << "There is no way to give out change :(\nPlease deposit a different amount.\n";
+            }
         }
         else {
-            std::cout << "You have not inserted enough money. Please try again." << std::endl;
+            cout << "Insufficient funds. Please deposit a larger amount.\n";
         }
     }
     else {
-        std::cout << "This product is out of stock. Please try another product." << std::endl;
+        cout << "The product is out of stock :(\n";
     }
 }
 
 int main() {
-    dispenserType dispenser1(10, 20);
-    dispenserType dispenser2(8, 10);
-    dispenserType dispenser3(2, 5);
+    VendingMachine cashRegister(1000);
+    ProductDispenser Gummies(200, 50), Chips(50, 130), Candies(100, 45), Chocolate(25, 70);
 
-    cashRegister cashRegister1;
+    int choice;
+    displayMenu();
+    cin >> choice;
 
-    while (true) {
-        std::cout << "Welcome to the vending machine!" << std::endl;
-        std::cout << "Please choose a product:" << std::endl;
-        std::cout << "1. Candy" << std::endl;
-        std::cout << "2. Chips" << std::endl;
-        std::cout << "3. Gum" << std::endl;
-        std::cout << "4. Cookies" << std::endl;
-        std::cout << "5. Exit" << std::endl;
-
-        int choice;
-        std::cin >> choice;
-
-        switch (choice) {
-        case 1:
-            showSelection(dispenser1);
-            sellProduct(dispenser1, cashRegister1);
-            break;
-        case 2:
-            showSelection(dispenser2);
-            sellProduct(dispenser2, cashRegister1);
-            break;
-        case 3:
-            showSelection(dispenser3);
-            sellProduct(dispenser3, cashRegister1);
-            break;
-        case 4:
-            showSelection(dispenser2);
-            sellProduct(dispenser2, cashRegister1);
-            break;
-        case 5:
-            std::cout << "Thank you for using the vending machine! Have a nice day!" << std::endl;
-            return 0;
-        default:
-            std::cout << "Invalid choice. Please try again." << std::endl;
-            break;
-        }
+    switch (choice) {
+    case 1:
+        processSale(Gummies, cashRegister);
+        break;
+    case 2:
+        processSale(Chips, cashRegister);
+        break;
+    case 3:
+        processSale(Candies, cashRegister);
+        break;
+    case 4:
+        processSale(Chocolate, cashRegister);
+        break;
+    default:
+        cout << "Wrong choice.\n";
+        break;
     }
+
+    return 0;
 }
